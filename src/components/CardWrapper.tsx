@@ -1,8 +1,10 @@
-import { Suspense, useCallback, useEffect, useState } from 'react';
+"use client"
+import { Suspense, useEffect, useState } from 'react';
 import CardSkeleton from './CardSkeleton';
 import { getAllProducts } from '@/actions';
 import Card from './Card';
 import { toast } from 'sonner';
+
 
  export interface ProductInterFace {
   _id: string;
@@ -16,22 +18,19 @@ import { toast } from 'sonner';
 const CardsWrapper = () => {
   const [products, setProducts] = useState<ProductInterFace[]>([]);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const data: ProductInterFace[] = await getAllProducts();
-      if (data) {
-        setProducts(data);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("There is an error while getting all trending products")
-      // Display an error message to the user
-    }
-  }, []);
-
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data: ProductInterFace[] = await getAllProducts() as ProductInterFace[];
+        setProducts(data);
+      } catch (error) {
+        console.error(error);
+        toast.error("There is an error while getting all trending products");
+      }
+    };
+
     fetchData();
-  }, [fetchData]);
+  }, []);
 
   if(products.length == 0){
     return(
