@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import React from 'react'
 import { IoMdReturnLeft } from "react-icons/io";
+import loading from './loading';
+import Loading from './loading';
 const page = async ({ params }: {
   params: {
     id: string
@@ -14,9 +16,10 @@ const page = async ({ params }: {
   if (!product) {
     notFound();
   }
-
+  
   return (
-    <div className="flex flex-col items-center p-4">
+    <div className="flex flex-col items-center p-4 border-2 border-black">
+
       <Link href={"/"} className='text-md text-blue-900  absolute top-[10px] left-[10px]'><IoMdReturnLeft className='inline text-xl'/>HOME</Link>
 
       <div className=' flex  flex-col lg:flex-row border-b-2 border-gray-700 rounded-sm mb-8'>
