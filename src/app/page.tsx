@@ -4,7 +4,8 @@ import TrendingSection from '@/components/TrendingSection';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from "sonner"
-
+import { TbWorldSearch } from "react-icons/tb";
+import { CgSpinnerTwoAlt } from 'react-icons/cg';
 
 const Navbar = () => {
   return (
@@ -44,6 +45,7 @@ const isValidAmazonProductURL = (url: string) => {
 
 const Home = () => {
   const [searchInput, setSearchInput] = useState('');
+  const [loading,setLoading]=useState(false);
   const router=useRouter();
 
   const handleSubmit = async(e:any) => {
@@ -51,7 +53,9 @@ const Home = () => {
     // console.log("input before every thing",searchInput)
     // handle form submission here
     //  its your choice if you want to check if its valid or not amazon link.
-    const isValidLink = isValidAmazonProductURL(searchInput);
+    try {
+      setLoading(true)
+      const isValidLink = isValidAmazonProductURL(searchInput);
     // console.log(isValidLink);
     if(!isValidLink) return alert('Please provide a valid Amazon link')
     const responseAction=await scrapAndStoreProduct(searchInput);
@@ -64,6 +68,12 @@ const Home = () => {
       
     }
     router.push(`/product/${responseAction?.productId}`)
+    } catch (error) {
+      console.log(error)
+      toast.error("Error occured on the product search page")
+    }finally{
+      setLoading(false)
+    }
 
 
 
@@ -78,6 +88,7 @@ const Home = () => {
       <form onSubmit={handleSubmit} className="w-full max-w-md mt-8">
         <div className="relative">
           <input
+          disabled={loading}
             required
             type="text"
             value={searchInput}
@@ -87,7 +98,9 @@ const Home = () => {
             />
           <i className="fas fa-search absolute top-1/2 transform -translate-y-1/2 left-3 text-gray-400"></i>
         </div>
-        <button type="submit" className="w-full block bg-blue-500 text-white rounded-md py-2 mt-4 hover:bg-blue-600">Search</button>
+        <button type="submit" className="w-full  bg-blue-500 text-white rounded-md py-2 mt-4 hover:bg-blue-600 flex justify-center items-center">
+        {loading?<CgSpinnerTwoAlt className='animate-spin ease-in text-xl' /> :<span className='flex gap-2'>Search <TbWorldSearch className='text-2xl' /></span>}
+        </button>
       </form>
       {/* btn to go down to the trending section */}
     </div>
